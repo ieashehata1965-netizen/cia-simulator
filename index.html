@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIA Smart Exam Simulator</title>
+
+<style>
+
+body{
+    font-family:Tahoma, Arial;
+    background:#0f172a;
+    color:white;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+.header{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.header h1{
+    margin-bottom:5px;
+}
+
+.guide{
+    background:#1e293b;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:20px;
+    border-right:4px solid #22c55e;
+}
+
+.guide h2{
+    color:#22c55e;
+    margin-top:0;
+}
+
+.guide ol, .guide ul{
+    line-height:1.8;
+}
+
+.guide li{
+    margin-bottom:10px;
+}
+
+.guide code{
+    background:#111827;
+    padding:2px 6px;
+    border-radius:4px;
+    color:#fbbf24;
+}
+
+.controls{
+    background:#111827;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:20px;
+}
+
+select,button,input{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:8px;
+    margin-top:10px;
+    font-size:16px;
+}
+
+button{
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.status{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+}
+
+.statusBox{
+    flex:1;
+    background:#111827;
+    padding:15px;
+    border-radius:10px;
+    text-align:center;
+}
+
+.card{
+    background:#111827;
+    padding:25px;
+    border-radius:14px;
+}
+
+.question{
+    font-size:24px;
+    margin-bottom:20px;
+    line-height:1.8;
+}
+
+.answerBtn{
+    width:100%;
+    padding:14px;
+    margin:10px 0;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:17px;
+    transition:0.3s;
+}
+
+.answerBtn:hover{
+    opacity:0.92;
+}
+
+.correct{
+    background:#16a34a !important;
+    color:white;
+}
+
+.wrong{
+    background:#dc2626 !important;
+    color:white;
+}
+
+.disabled{
+    pointer-events:none;
+    opacity:0.7;
+}
+
+.resultBox{
+    background:#111827;
+    padding:25px;
+    border-radius:14px;
+    margin-top:20px;
+    display:none;
+}
+
+.progress{
+    width:100%;
+    height:18px;
+    background:#1e293b;
+    border-radius:20px;
+    overflow:hidden;
+    margin-bottom:20px;
+}
+
+.progressBar{
+    height:100%;
+    width:0%;
+    background:#22c55e;
+    transition:0.4s;
+}
+
+.reviewItem{
+    background:#1e293b;
+    padding:15px;
+    border-radius:10px;
+    margin-top:12px;
+}
+
+.small{
+    opacity:0.85;
+    font-size:14px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+<h1>CIA Smart Exam Simulator</h1>
+<p>Certified Internal Auditor - Part 1 Intelligent Training System</p>
+</div>
+
+<div class="guide">
+<h2>📋 دليل الاستخدام</h2>
+<ol>
+<li><strong>أدخل اسمك:</strong> في حقل "اسم المتدرب"</li>
+<li><strong>اختر عدد الأسئلة:</strong> يمكنك اختيار 10 أو 20 أو 30 سؤال</li>
+<li><strong>حدد المدة الزمنية:</strong> اختر من 5 أو 10 أو 15 دقيقة</li>
+<li><strong>ابدأ الامتحان:</strong> اضغط زر "ابدأ الامتحان الذكي"</li>
+<li><strong>الإجابة:</strong> اختر الإجابة الصحيحة من بين الخيارات الأربعة</li>
+<li><strong>المراجعة:</strong> ستتلقى تقرير نهائي مع شرح للإجابات الخاطئة</li>
+</ol>
+
+<h3>📊 مؤشرات الأداء:</h3>
+<ul>
+<li><strong>الدرجة:</strong> عدد الإجابات الصحيحة</li>
+<li><strong>السؤال:</strong> رقم السؤال الحالي</li>
+<li><strong>الوقت:</strong> الوقت المتبقي</li>
+<li><strong>الدقة:</strong> نسبة الإجابات الصحيحة</li>
+</ul>
+
+<h3>🎯 التقييم:</h3>
+<ul>
+<li><strong>ممتاز:</strong> 90% فأكثر</li>
+<li><strong>جيد جدا:</strong> من 75% إلى 89%</li>
+<li><strong>جيد:</strong> من 60% إلى 74%</li>
+<li><strong>يحتاج تطوير:</strong> أقل من 60%</li>
+</ul>
+</div>
+
+<div class="controls">
+
+<label>اسم المتدرب</label>
+<input type="text" id="candidateName" placeholder="اكتب اسمك">
+
+<label>عدد الأسئلة</label>
+<select id="questionCount">
+<option value="10">10 أسئلة</option>
+<option value="20">20 سؤال</option>
+<option value="30">30 سؤال</option>
+</select>
+
+<label>مدة الاختبار</label>
+<select id="examTime">
+<option value="300">5 دقائق</option>
+<option value="600">10 دقائق</option>
+<option value="900">15 دقيقة</option>
+</select>
+
+<button onclick="startExam()">ابدأ الامتحان الذكي</button>
+
+</div>
+
+<div class="status">
+<div class="statusBox">
+<h3>الدرجة</h3>
+<div id="score">0</div>
+</div>
+
+<div class="statusBox">
+<h3>السؤال</h3>
+<div id="currentQuestion">0</div>
+</div>
+
+<div class="statusBox">
+<h3>الوقت</h3>
+<div id="timer">0</div>
+</div>
+
+<div class="statusBox">
+<h3>الدقة</h3>
+<div id="accuracy">0%</div>
+</div>
+</div>
+
+<div class="progress">
+<div class="progressBar" id="progressBar"></div>
+</div>
+
+<div id="quiz"></div>
+
+<div class="resultBox" id="resultBox"></div>
+
+</div>
+
+<script>
+
+const questionBank = [
+
+{
+q:"ما الهدف الأساسي من التدقيق الداخلي وفق معايير IIA؟",
+a:["زيادة الأرباح","تحسين الحوكمة وإدارة المخاطر والرقابة","إعداد الضرائب","إدارة المبيعات"],
+c:1,
+ex:"التدقيق الداخلي يهدف إلى إضافة القيمة وتحسين الحوكمة وإدارة المخاطر والرقابة."
+},
+
+{
+q:"أي جهة تعتمد خطة التدقيق السنوية؟",
+a:["المحاسب","لجنة التدقيق","المشتريات","المبيعات"],
+c:1,
+ex:"لجنة التدقيق تعتمد الخطة لضمان الاستقلالية والرقابة."
+},
+
+{
+q:"الاستقلالية تعني:",
+a:["زيادة الرواتب","عدم التأثر في الحكم المهني","إلغاء التقارير","التسويق"],
+c:1,
+ex:"الاستقلالية عنصر أساسي للحفاظ على الموضوعية المهنية."
+},
+
+{
+q:"أي من التالي يمثل خدمة تأكيد؟",
+a:["الاستشارات","تقييم الرقابة الداخلية","التوظيف","البيع"],
+c:1,
+ex:"خدمات التأكيد تشمل تقييم كفاية وفعالية الرقابة."
+},
+
+{
+q:"الشك المهني يعني:",
+a:["رفض الجميع","التقييم الموضوعي للأدلة","إلغاء الرقابة","التسرع"],
+c:1,
+ex:"الشك المهني يعتمد على التفكير التحليلي وعدم التسليم الكامل دون دليل."
+},
+
+{
+q:"أي عنصر يعد من مكونات COSO؟",
+a:["الإنتاج","بيئة الرقابة","المبيعات","التسويق"],
+c:1,
+ex:"بيئة الرقابة أحد المكونات الخمسة الأساسية لإطار COSO."
+},
+
+{
+q:"المخاطر تقاس عادة عبر:",
+a:["اللون فقط","الاحتمالية × الأثر","عدد الموظفين","الإيرادات"],
+c:1,
+ex:"يتم تقييم المخاطر بناء على احتمال الحدوث والأثر المتوقع."
+},
+
+{
+q:"الرقابة الوقائية تهدف إلى:",
+a:["اكتشاف الخطأ بعد وقوعه","منع الخطأ قبل حدوثه","إلغاء العمليات","زيادة المخاطر"],
+c:1,
+ex:"الرقابة الوقائية تمنع وقوع الخطأ أو الاحتيال قبل حدوثه."
+},
+
+{
+q:"أي من التالي يعد احتيالا؟",
+a:["خطأ غير مقصود","تزوير متعمد","سهو بسيط","ضعف خبرة"],
+c:1,
+ex:"الاحتيال يتطلب عنصر القصد والتعمد."
+},
+
+{
+q:"من مسؤول عن إدارة المخاطر؟",
+a:["الإدارة التنفيذية","المدقق فقط","المحاسب","المورد"],
+c:0,
+ex:"الإدارة التنفيذية تتحمل المسؤولية الأساسية عن إدارة المخاطر."
+},
+
+{
+q:"أفضل دليل تدقيق هو:",
+a:["الشفهي","الموثق والموضوعي","التخمين","الرأي الشخصي"],
+c:1,
+ex:"الأدلة الموثقة والموضوعية أكثر موثوقية وقابلية للاعتماد."
+},
+
+{
+q:"الغرض من أوراق العمل:",
+a:["زيادة الورق","توثيق أعمال التدقيق","إلغاء الأدلة","إخفاء النتائج"],
+c:1,
+ex:"أوراق العمل تدعم الاستنتاجات وتوثق إجراءات التدقيق."
+},
+
+{
+q:"ما الهدف من تقييم المخاطر؟",
+a:["زيادة المصروفات","تحديد الأولويات","تقليل الجودة","إلغاء الرقابة"],
+c:1,
+ex:"تقييم المخاطر يساعد على تركيز الجهود على المجالات الحرجة."
+},
+
+{
+q:"السرية تعني:",
+a:["كشف المعلومات","حماية المعلومات","تبادل الأسرار","نشر البيانات"],
+c:1,
+ex:"السرية من المبادئ الأساسية في أخلاقيات مهنة التدقيق."
+},
+
+{
+q:"تعارض المصالح يعني:",
+a:["الحياد الكامل","تأثير المصلحة الشخصية على القرار","تقوية الرقابة","خفض المخاطر"],
+c:1,
+ex:"تعارض المصالح يهدد الموضوعية والاستقلالية."
+},
+
+{
+q:"أي من التالي يمثل خطرا استراتيجيا؟",
+a:["فشل مشروع توسع","تعطل طابعة","غياب موظف","خطأ أرشفة"],
+c:0,
+ex:"المخاطر الاستراتيجية تؤثر على أهداف المنشأة بعيدة المدى."
+},
+
+{
+q:"الحوكمة تهدف إلى:",
+a:["زيادة المخاطر","تعزيز الشفافية والرقابة","إلغاء التدقيق","تقليل التقارير"],
+c:1,
+ex:"الحوكمة الفعالة تعزز الشفافية والمساءلة والرقابة."
+},
+
+{
+q:"أي من التالي يعد دليلا كافيا؟",
+a:["الشائعات","الأدلة الموثقة","التوقعات","التقديرات الشخصية"],
+c:1,
+ex:"الدليل الكافي يجب أن يكون ملائما وموثوقا."
+},
+
+{
+q:"الموضوعية تعني:",
+a:["التحيز","الحكم دون تأثير","المحاباة","إخفاء المعلومات"],
+c:1,
+ex:"الموضوعية تتطلب عدم التأثر بالمصالح الشخصية أو الضغوط."
+},
+
+{
+q:"لجنة التدقيق تتبع عادة:",
+a:["الإدارة التنفيذية","مجلس الإدارة","المبيعات","المحاسبة"],
+c:1,
+ex:"لجنة التدقيق تعد لجنة منبثقة من مجلس الإدارة."
+}
+
+];
+
+while(questionBank.length < 120){
+questionBank.push(...questionBank.slice(0,20));
+}
+
+let examQuestions = [];
+let currentQuestion = 0;
+let score = 0;
+let timer;
+let timeLeft = 0;
+let wrongAnswers = [];
+
+function shuffle(array){
+return array.sort(()=>Math.random()-0.5);
+}
+
+function startExam(){
+
+clearInterval(timer);
+
+wrongAnswers = [];
+
+let count = parseInt(document.getElementById("questionCount").value);
+
+timeLeft = parseInt(document.getElementById("examTime").value);
+
+score = 0;
+currentQuestion = 0;
+
+let randomQuestions = shuffle([...questionBank]).slice(0,count);
+
+examQuestions = randomQuestions;
+
+updateStatus();
+
+loadQuestion();
+
+startTimer();
+
+}
+
+function startTimer(){
+
+clearInterval(timer);
+
+updateTimer();
+
+timer = setInterval(()=>{
+
+if(timeLeft <= 0){
+clearInterval(timer);
+finishExam();
+return;
+}
+
+timeLeft--;
+updateTimer();
+
+},1000);
+
+}
+
+function updateTimer(){
+
+let minutes = Math.floor(timeLeft / 60);
+let seconds = timeLeft % 60;
+
+seconds = seconds < 10 ? "0" + seconds : seconds;
+
+document.getElementById("timer").innerText = minutes + ":" + seconds;
+
+}
+
+function updateStatus(){
+
+document.getElementById("score").innerText = score;
+
+document.getElementById("currentQuestion").innerText = currentQuestion + 1;
+
+let accuracy = currentQuestion === 0
+? 0
+: Math.round((score/currentQuestion)*100);
+
+document.getElementById("accuracy").innerText = accuracy + "%";
+
+let progress = (currentQuestion / examQuestions.length) * 100;
+
+document.getElementById("progressBar").style.width = progress + "%";
+
+}
+
+function loadQuestion(){
+
+if(currentQuestion >= examQuestions.length){
+finishExam();
+return;
+}
+
+updateStatus();
+
+let q = examQuestions[currentQuestion];
+
+let html = `
+<div class="card">
+<div class="question">
+${currentQuestion + 1}) ${q.q}
+</div>
+`;
+
+q.a.forEach((answer,index)=>{
+html += `
+<button class="answerBtn" onclick="checkAnswer(this,${index})">
+${answer}
+</button>
+`;
+});
+
+html += `</div>`;
+
+document.getElementById("quiz").innerHTML = html;
+
+}
+
+function checkAnswer(button,index){
+
+let q = examQuestions[currentQuestion];
+
+let buttons = document.querySelectorAll("#quiz button");
+
+buttons.forEach(btn=>{
+btn.classList.add("disabled");
+});
+
+if(index === q.c){
+
+button.classList.add("correct");
+score++;
+
+}else{
+
+button.classList.add("wrong");
+buttons[q.c].classList.add("correct");
+
+wrongAnswers.push({
+question:q.q,
+correct:q.a[q.c],
+explanation:q.ex
+});
+
+}
+
+updateStatus();
+
+setTimeout(()=>{
+currentQuestion++;
+loadQuestion();
+},1400);
+
+}
+
+function finishExam(){
+
+clearInterval(timer);
+
+let total = examQuestions.length;
+
+let percent = Math.round((score/total)*100);
+
+let level = "";
+
+if(percent >= 90){
+level = "ممتاز";
+}
+else if(percent >= 75){
+level = "جيد جدا";
+}
+else if(percent >= 60){
+level = "جيد";
+}
+else{
+level = "يحتاج تطوير";
+}
+
+let reviewHtml = "";
+
+wrongAnswers.forEach(item=>{
+reviewHtml += `
+<div class="reviewItem">
+<h3>${item.question}</h3>
+<p><strong>الإجابة الصحيحة:</strong> ${item.correct}</p>
+<p class="small">${item.explanation}</p>
+</div>
+`;
+});
+
+let candidate = document.getElementById("candidateName").value || "المتدرب";
+
+let finalHtml = `
+<h2>تقرير الاختبار النهائي</h2>
+
+<p><strong>اسم المتدرب:</strong> ${candidate}</p>
+
+<p><strong>الدرجة:</strong> ${score} من ${total}</p>
+
+<p><strong>النسبة:</strong> ${percent}%</p>
+
+<p><strong>التقييم:</strong> ${level}</p>
+
+<hr>
+
+<h3>تحليل الأداء</h3>
+
+<p>
+${percent >= 80
+? "أداء ممتاز يعكس فهما جيدا لمعايير التدقيق الداخلي والحوكمة وإدارة المخاطر."
+: "يوصى بالتركيز على المراجعة اليومية والتدريب المستمر على مفاهيم CIA Part 1."}
+</p>
+
+<h3>مراجعة الإجابات الخاطئة</h3>
+
+${wrongAnswers.length === 0
+? "<p>ممتاز لم يتم تسجيل أي إجابات خاطئة.</p>"
+: reviewHtml}
+`;
+
+document.getElementById("quiz").innerHTML = "";
+
+document.getElementById("resultBox").style.display = "block";
+
+document.getElementById("resultBox").innerHTML = finalHtml;
+
+}
+
+</script>
+
+</body>
+</html>
