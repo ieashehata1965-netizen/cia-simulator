@@ -210,6 +210,15 @@ new QRCode(document.getElementById("qr"), {
     height: 140
 });
 
+<script>
+const params = new URLSearchParams(window.location.search);
+
+document.getElementById("name").innerText = params.get("name");
+document.getElementById("score").innerText = params.get("score");
+document.getElementById("total").innerText = params.get("total");
+document.getElementById("percent").innerText = params.get("percent") + "%";
+document.getElementById("id").innerText = params.get("id");
+    
 </script>
 
 </body>
