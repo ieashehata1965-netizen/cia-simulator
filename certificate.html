@@ -10,6 +10,7 @@
 
 <style>
 
+/* ===== General ===== */
 body{
     font-family: Tahoma, Arial;
     margin:0;
@@ -18,15 +19,22 @@ body{
 
 /* ===== Certificate Box ===== */
 .cert{
-    max-width:900px;
-    margin:30px auto;
+    width:794px;
+    height:1123px;
+    margin:0 auto;
     background:#fff;
-    padding:30px;
+    padding:40px;
     border-radius:18px;
     border:10px double #b08d3c;
     box-shadow:0 10px 25px rgba(0,0,0,0.2);
     text-align:center;
     position:relative;
+    overflow:hidden;
+    box-sizing:border-box;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
 }
 
 /* Watermark */
@@ -39,7 +47,7 @@ body{
     font-size:60px;
     color:rgba(0,0,0,0.05);
     font-weight:bold;
-    z-index:0;
+    pointer-events:none;
 }
 
 /* Text */
@@ -60,18 +68,18 @@ h2{
     z-index:2;
 }
 
-.badge{
-    font-size:22px;
-    font-weight:bold;
-    color:#166534;
-    margin-top:10px;
-}
-
 .grid{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:10px;
     margin-top:20px;
+}
+
+.badge{
+    font-size:22px;
+    font-weight:bold;
+    color:#166534;
+    margin-top:10px;
 }
 
 .small{
@@ -108,11 +116,32 @@ button{
     cursor:pointer;
 }
 
-/* Print */
+/* ===== Print Fix (ONE PAGE) ===== */
 @media print{
-    button{display:none;}
-    body{background:#fff;}
-    .cert{box-shadow:none;}
+
+    @page{
+        size: A4;
+        margin:0;
+    }
+
+    body{
+        margin:0;
+        padding:0;
+        background:#fff;
+    }
+
+    button{
+        display:none !important;
+    }
+
+    .cert{
+        box-shadow:none;
+        transform: scale(0.80);
+        transform-origin: top center;
+        overflow:hidden;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
 }
 
 </style>
@@ -148,14 +177,14 @@ button{
 
 <script>
 
-/* ===== GET DATA ===== */
+/* ===== DATA ===== */
 const params = new URLSearchParams(window.location.search);
 
 let name = params.get("name") || "Unknown";
 let score = parseInt(params.get("score") || 0);
 let total = parseInt(params.get("total") || 0);
 
-/* ===== CALCULATE ===== */
+/* ===== CALC ===== */
 let percent = total ? Math.round((score / total) * 100) : 0;
 
 let level =
@@ -164,10 +193,9 @@ let level =
     "Needs Improvement (يحتاج تطوير)";
 
 /* ===== CERT ID ===== */
-let certId =
-    "CIA-" + Date.now().toString().slice(-8);
+let certId = "CIA-" + Date.now().toString().slice(-8);
 
-/* ===== FILL PAGE ===== */
+/* ===== FILL ===== */
 document.getElementById("name").innerHTML = "Name: " + name;
 document.getElementById("score").innerHTML = "Score: " + score + " / " + total;
 document.getElementById("percent").innerHTML = "Rate: " + percent + "%";
@@ -181,262 +209,6 @@ new QRCode(document.getElementById("qr"), {
     height: 140
 });
 
-</script>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Certificate Verification</title>
-
-<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
-
-<style>
-
-body{
-    font-family: Tahoma;
-    margin:0;
-    background: linear-gradient(135deg,#f6f2e7,#efe2c1,#f8f5ea);
-}
-
-
-/* ===== Certificate ===== */
-.cert{
-    max-width:900px;
-    margin:30px auto;
-    background:#fff;
-    padding:30px;
-    border-radius:18px;
-    border:10px double #b08d3c;
-    box-shadow:0 10px 25px rgba(0,0,0,0.2);
-    text-align:center;
-    position:relative;
-}
-
-/* Watermark */
-.cert::before{
-    content:"GRC ACADEMY";
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    font-size:60px;
-    color:rgba(0,0,0,0.05);
-    font-weight:bold;
-    z-index:0;
-}
-
-/* Content */
-h1{
-    color:#7a5a12;
-    margin-bottom:5px;
-}
-
-h2{
-    font-size:16px;
-    font-weight:normal;
-    color:#555;
-}
-
-.info{
-    margin:10px 0;
-    font-size:18px;
-    position:relative;
-    z-index:2;
-}
-
-.badge{
-    font-size:22px;
-    font-weight:bold;
-    color:#166534;
-    margin-top:10px;
-}
-
-.grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-    margin-top:20px;
-}
-
-/* QR */
-#qr{
-    margin:auto;
-}
-
-/* Seal */
-.seal{
-    margin-top:20px;
-    display:inline-block;
-    padding:10px 20px;
-    border:3px solid #b08d3c;
-    border-radius:50%;
-    font-weight:bold;
-    color:#7a5a12;
-}
-
-/* Button */
-button{
-    margin-top:20px;
-    padding:12px;
-    width:100%;
-    border:none;
-    border-radius:10px;
-    background:#b08d3c;
-    color:#fff;
-    font-size:16px;
-    cursor:pointer;
-}
-
-@media print{
-    @page {
-        size: A4;
-        margin: 0;
-    }
-
-    button{
-        display:none !important;
-    }
-
-    body{
-        margin:0;
-        padding:0;
-        background:#fff;
-    }
-
-    *{
-        overflow: hidden !important;
-    }
-
-    .cert{
-        box-shadow:none;
-        transform: scale(0.85);
-        transform-origin: top center;
-        max-height: 100vh;
-        page-break-inside: avoid;
-        break-inside: avoid;
-    }
-}
-.small{
-    font-size:14px;
-    color:#666;
-}
-</style>
-</head>
-
-<body>
-
-<div class="cert">
-
-<h1>Internal Audit & GRC Professional Academy</h1>
-<h2>الأكاديمية المهنية للتدقيق الداخلي والحوكمة وإدارة المخاطر</h2>
-
-</style>
-</head>
-
-<body>
-
-<div class="cert">
-
-<h1>Internal Audit & GRC Professional Academy</h1>
-<h2>الأكاديمية المهنية للتدقيق الداخلي والحوكمة وإدارة المخاطر</h2>
-
-<hr>
-    
-<div class="info" id="name"></div>
-<div class="info" id="track"></div>
-
-<div class="grid">
-    <div class="info" id="score"></div>
-    <div class="info" id="percent"></div>
-</div>
-
-<div class="badge" id="level"></div>
-
-<div class="info small" id="certId"></div>
-
-<div id="qr"></div>
-
-<div class="seal">APPROVED</div>
-
-<div class="info small">
-Issued by: Chief Executive Officer – Internal Audit & GRC Academy
-</div>
-
-<button onclick="window.print()">Print Certificate</button>
-
-</div>
-
-<script>
-
-/* ================= SECURITY + CERT ENGINE ================= */
-
-const params = new URLSearchParams(window.location.search);
-
-let name = params.get("name");
-let track = params.get("track");
-let part = params.get("part");
-let score = parseInt(params.get("score"));
-let total = parseInt(params.get("total"));
-
-let percent = Math.round((score/total)*100);
-
-/* Level */
-let level =
-    percent >= 85 ? "Excellent (ممتاز)" :
-    percent >= 70 ? "Good (جيد)" :
-    "Needs Improvement (يحتاج تطوير)";
-
-/* ===== Anti-Fake Certificate ID ===== */
-let certId =
-    "GRC-" +
-    track.toUpperCase() + "-" +
-    Date.now().toString().slice(-8) + "-" +
-    Math.random().toString(36).substring(2,7).toUpperCase();
-
-/* ===== Verification Link ===== */
-let verifyURL =
-    window.location.origin + "/verify.html?id=" + certId;
-
-/* ===== Fill Data ===== */
-
-document.getElementById("name").innerHTML =
-"Candidate: " + name;
-
-document.getElementById("track").innerHTML =
-"Track: " + track + " | Part: " + part;
-
-document.getElementById("score").innerHTML =
-"Score: " + score + " / " + total;
-
-document.getElementById("percent").innerHTML =
-"Success Rate: " + percent + "%";
-
-document.getElementById("level").innerHTML =
-level;
-
-document.getElementById("certId").innerHTML =
-"Certificate ID: " + certId;
-
-/* ===== QR CODE ===== */
-new QRCode(document.getElementById("qr"), {
-    text: verifyURL,
-    width: 140,
-    height: 140
-});
-
-<script>
-const params = new URLSearchParams(window.location.search);
-
-document.getElementById("name").innerText = params.get("name");
-document.getElementById("score").innerText = params.get("score");
-document.getElementById("total").innerText = params.get("total");
-document.getElementById("percent").innerText = params.get("percent") + "%";
-document.getElementById("id").innerText = params.get("id");
-    
 </script>
 
 </body>
