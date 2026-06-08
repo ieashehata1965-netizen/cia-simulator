@@ -202,6 +202,7 @@ body{
     background: linear-gradient(135deg,#f6f2e7,#efe2c1,#f8f5ea);
 }
 
+
 /* ===== Certificate ===== */
 .cert{
     max-width:900px;
@@ -290,16 +291,28 @@ button{
     cursor:pointer;
 }
 
-/* Print */
 @media print{
-    button{display:none;}
-    body{background:#fff;}
+    @page {
+        size: A4;
+        margin: 0;
+    }
+
+    button{
+        display:none !important;
+    }
+
+    body{
+        margin:0;
+        padding:0;
+        background:#fff;
+    }
 
     .cert{
         box-shadow:none;
+        transform: scale(0.88);
+        transform-origin: top center;
         page-break-inside: avoid;
         break-inside: avoid;
-        transform: scale(0.92);
     }
 }
 .small{
