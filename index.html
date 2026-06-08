@@ -215,7 +215,7 @@ function answer(i){
     setTimeout(showQuestion, 200);
 }
 
-// النتيجة
+
 function showResult(){
 
     let percent = (score / exam.length) * 100;
@@ -224,14 +224,12 @@ function showResult(){
         percent >= 85 ? "ممتاز" :
         percent >= 70 ? "جيد" : "يحتاج تحسين";
 
-    document.getElementById("quiz").innerHTML = "";
-
-    document.getElementById("result").innerHTML = `
-        اسم المتدرب: ${student}<br>
-        النتيجة: ${score}/${exam.length}<br>
-        النسبة: ${percent.toFixed(1)}%<br>
-        التقييم: ${level}
-    `;
+    window.location.href =
+        "certificate.html?name=" + encodeURIComponent(student)
+        + "&track=" + track
+        + "&part=" + part
+        + "&score=" + score
+        + "&total=" + exam.length;
 }
 
 </script>
