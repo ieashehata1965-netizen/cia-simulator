@@ -228,7 +228,7 @@ function toggleMode(){
 /* ===== LOAD BANK ===== */
 async function loadBank(){
     try{
-        const res = await fetch(track+"-questions.json");
+        const res = await fetch("cia-question-bank.json")
         const data = await res.json();
         bank = data;
     }catch(e){
