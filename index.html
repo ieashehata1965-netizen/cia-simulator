@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>CIA Mobile Training</title>
+<title>Internal Audit Training Platform</title>
 
 <style>
 body{
@@ -12,89 +12,75 @@ body{
     background: linear-gradient(135deg,#f6f2e7,#efe2c1,#f8f5ea);
 }
 
-/* الحاوية */
 .container{
-    max-width: 600px;
-    margin: auto;
-    padding: 10px;
+    max-width:750px;
+    margin:auto;
+    padding:15px;
 }
 
-/* العنوان */
 h1{
     text-align:center;
-    font-size:20px;
     color:#7a5a12;
-    margin:10px 0;
+    font-size:22px;
 }
 
-/* كروت التحكم */
 .card{
     background:#fff;
-    padding:15px;
+    padding:18px;
     margin:10px 0;
-    border-radius:12px;
-    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    border-radius:15px;
+    box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
 
-/* كل سطر اختيار */
-.row{
-    margin:10px 0;
-}
-
-label{
-    font-size:16px;
-    display:block;
-    margin-bottom:5px;
-}
-
-/* عناصر الإدخال */
-select{
+input,select,button{
     width:100%;
     padding:12px;
+    margin:8px 0;
     font-size:16px;
-    border-radius:8px;
-    border:1px solid #ccc;
+    border-radius:10px;
+    border:1px solid #ddd;
 }
 
-/* زر */
 button{
-    width:100%;
-    padding:12px;
-    font-size:18px;
     background:#b08d3c;
     color:#fff;
     border:none;
-    border-radius:10px;
-    margin-top:10px;
+    font-weight:bold;
 }
 
-/* الأسئلة */
-.question{
+.q-box{
     background:#fff;
-    padding:15px;
+    padding:22px;
     margin:10px 0;
-    border-radius:12px;
-    box-shadow:0 1px 5px rgba(0,0,0,0.1);
+    border-radius:15px;
+    box-shadow:0 3px 8px rgba(0,0,0,0.1);
 }
 
 .q-title{
-    font-size:16px;
+    font-size:22px;
     font-weight:bold;
-    margin-bottom:10px;
+    margin-bottom:15px;
 }
 
-.options label{
-    display:block;
-    margin:8px 0;
-    font-size:15px;
+.option{
+    padding:14px;
+    margin:10px 0;
+    border-radius:10px;
+    border:1px solid #ddd;
+    cursor:pointer;
+    background:#fafafa;
+    font-size:18px;
 }
 
-/* النتيجة */
+.option:hover{
+    background:#f0e6c8;
+}
+
 .result{
     text-align:center;
-    font-size:18px;
-    margin:15px 0;
+    font-size:22px;
     font-weight:bold;
+    margin-top:15px;
 }
 </style>
 </head>
@@ -103,137 +89,149 @@ button{
 
 <div class="container">
 
-<h1>نظام تدريب CIA - التدقيق الداخلي</h1>
+<h1>منصة التدقيق الداخلي والتأهيل المهني</h1>
 
-<!-- إعدادات الاختبار -->
-<div class="card">
+<div id="home" class="card">
 
-<div class="row">
-<label>اختر الجزء</label>
+<input id="studentName" placeholder="اسم المتدرب">
+
+<!-- المسار -->
+<select id="track">
+<option value="cia">CIA</option>
+<option value="cma">CMA</option>
+<option value="cfa">CFA</option>
+<option value="fmaa">FMAA</option>
+</select>
+
+<!-- الجزء الجديد -->
 <select id="part">
 <option value="all">كل الأجزاء</option>
 <option value="1">الجزء الأول</option>
 <option value="2">الجزء الثاني</option>
 <option value="3">الجزء الثالث</option>
+<option value="4">الجزء الرابع</option>
 </select>
-</div>
 
-<div class="row">
-<label>عدد الأسئلة</label>
 <select id="count">
-<option value="5">5</option>
-<option value="10">10</option>
-<option value="20">20</option>
-<option value="30">30</option>
-<option value="50">50</option>
+<option value="5">5 أسئلة</option>
+<option value="10">10 أسئلة</option>
+<option value="20">20 سؤال</option>
+<option value="30">30 سؤال</option>
+<option value="50">50 سؤال</option>
 </select>
-</div>
-
-<div class="row">
-<label>المستوى</label>
-<select id="level">
-<option value="all">الكل</option>
-<option value="easy">سهل</option>
-<option value="medium">متوسط</option>
-<option value="hard">صعب</option>
-</select>
-</div>
 
 <button onclick="startExam()">بدء الاختبار</button>
 
 </div>
 
-<!-- الأسئلة -->
 <div id="quiz"></div>
-
-<button onclick="submitQuiz()">تصحيح الاختبار</button>
-
 <div id="result" class="result"></div>
 
 </div>
 
 <script>
 
-let questionBank = [];
-let examQuestions = [];
+let bank = [];
+let exam = [];
+let index = 0;
+let score = 0;
+let student = "";
+let track = "";
+let part = "all";
 
-// تحميل الأسئلة
-fetch("cia-question-bank.json")
-.then(res => res.json())
-.then(data => {
-    questionBank = data;
-});
+// تحميل بنك الأسئلة
+function loadBank(){
+    return fetch(track + "-questions.json")
+    .then(res => res.json())
+    .then(data => {
+        bank = data.sort(() => Math.random() - 0.5);
+    });
+}
 
 // بدء الاختبار
-function startExam(){
+async function startExam(){
 
-    let part = document.getElementById("part").value;
-    let level = document.getElementById("level").value;
+    student = document.getElementById("studentName").value.trim();
+    track = document.getElementById("track").value;
+    part = document.getElementById("part").value;
     let count = parseInt(document.getElementById("count").value);
 
-    let filtered = questionBank.filter(q => {
-        return (part === "all" || q.part == part) &&
-               (level === "all" || q.level == level);
-    });
+    if(!student){
+        alert("أدخل اسم المتدرب");
+        return;
+    }
 
-    filtered = filtered.sort(() => Math.random() - 0.5);
+    await loadBank();
 
-    examQuestions = filtered.slice(0, count);
+    // فلترة حسب الجزء
+    let pool = bank.filter(q =>
+        (part === "all" || q.part == part)
+    );
 
-    renderQuiz();
+    exam = pool.slice(0, count);
 
-    document.getElementById("result").innerHTML = "";
+    index = 0;
+    score = 0;
+
+    document.getElementById("home").style.display = "none";
+
+    showQuestion();
 }
 
-// عرض الأسئلة
-function renderQuiz(){
+// سؤال واحد فقط
+function showQuestion(){
 
-    let quiz = document.getElementById("quiz");
-    quiz.innerHTML = "";
+    if(index >= exam.length){
+        showResult();
+        return;
+    }
 
-    examQuestions.forEach((q, i) => {
+    let q = exam[index];
 
-        let html = `
-        <div class="question">
-            <div class="q-title">${i+1}. ${q.q}</div>
-            <div class="options">`;
+    let html = `
+    <div class="q-box">
+        <div class="q-title">${index+1}. ${q.q}</div>
+    `;
 
-        q.a.forEach((opt, j) => {
-            html += `
-            <label>
-                <input type="radio" name="q${i}" value="${j}">
-                ${opt}
-            </label>`;
-        });
-
-        html += `</div></div>`;
-
-        quiz.innerHTML += html;
+    q.a.forEach((opt, i) => {
+        html += `<div class="option" onclick="answer(${i})">${opt}</div>`;
     });
+
+    html += `</div>`;
+
+    document.getElementById("quiz").innerHTML = html;
 }
 
-// التصحيح
-function submitQuiz(){
+// الإجابة
+function answer(i){
 
-    let score = 0;
+    let q = exam[index];
 
-    examQuestions.forEach((q, i) => {
+    if(i === q.c){
+        score++;
+    }
 
-        let selected = document.querySelector(`input[name="q${i}"]:checked`);
+    index++;
+    setTimeout(showQuestion, 200);
+}
 
-        if(selected && parseInt(selected.value) === q.c){
-            score++;
-        }
-    });
+// النتيجة
+function showResult(){
 
-    let percent = (score / examQuestions.length) * 100;
+    let percent = (score / exam.length) * 100;
 
     let level =
         percent >= 85 ? "ممتاز" :
         percent >= 70 ? "جيد" : "يحتاج تحسين";
 
-    document.getElementById("result").innerHTML =
-        `النتيجة: ${score}/${examQuestions.length} (${percent.toFixed(1)}%) - ${level}`;
+    document.getElementById("quiz").innerHTML = "";
+
+    document.getElementById("result").innerHTML = `
+        اسم المتدرب: ${student}<br>
+        النتيجة: ${score}/${exam.length}<br>
+        النسبة: ${percent.toFixed(1)}%<br>
+        التقييم: ${level}
+    `;
 }
 
 </script>
