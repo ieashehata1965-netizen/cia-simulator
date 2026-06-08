@@ -294,9 +294,14 @@ button{
 @media print{
     button{display:none;}
     body{background:#fff;}
-    .cert{box-shadow:none;}
-}
 
+    .cert{
+        box-shadow:none;
+        page-break-inside: avoid;
+        break-inside: avoid;
+        transform: scale(0.92);
+    }
+}
 .small{
     font-size:14px;
     color:#666;
