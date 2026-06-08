@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>CIA Full Training System</title>
+<title>CIA Training System</title>
 
 <style>
 body{
@@ -13,7 +13,7 @@ body{
 }
 
 .container{
-    width: 950px;
+    width: 900px;
     margin: 20px auto;
     background:#fff;
     padding: 20px;
@@ -26,15 +26,13 @@ h1{
 }
 
 .controls{
-    display:flex;
-    gap:10px;
-    justify-content:center;
-    flex-wrap:wrap;
-    margin-bottom:20px;
+    text-align:center;
+    margin-bottom:15px;
 }
 
 select, button{
     padding:8px;
+    margin:5px;
     font-size:16px;
 }
 
@@ -62,9 +60,8 @@ select, button{
 
 <div class="container">
 
-<h1>نظام تدريب التدقيق الداخلي CIA</h1>
+<h1>نظام تدريب CIA - صفحة واحدة</h1>
 
-<!-- أدوات التحكم -->
 <div class="controls">
 
 <select id="part">
@@ -95,7 +92,7 @@ select, button{
 
 <div id="quiz"></div>
 
-<button onclick="submitQuiz()">تصحيح الاختبار</button>
+<button onclick="submitQuiz()">تصحيح</button>
 
 <div id="result"></div>
 
@@ -106,14 +103,14 @@ select, button{
 let questionBank = [];
 let examQuestions = [];
 
-// ===== تحميل بنك الأسئلة =====
+// تحميل الملف
 fetch("cia-question-bank.json")
 .then(res => res.json())
 .then(data => {
     questionBank = data;
 });
 
-// ===== بدء الاختبار =====
+// بدء الاختبار
 function startExam(){
 
     let part = document.getElementById("part").value;
@@ -126,69 +123,63 @@ function startExam(){
                (level === "all" || q.level == level);
     });
 
-    // خلط الأسئلة
     filtered = filtered.sort(() => Math.random() - 0.5);
 
     examQuestions = filtered.slice(0, count);
 
     renderQuiz();
+
     document.getElementById("result").innerHTML = "";
 }
 
-// ===== عرض الأسئلة =====
+// عرض الأسئلة (نفس الصفحة فقط)
 function renderQuiz(){
 
-    let quizDiv = document.getElementById("quiz");
-    quizDiv.innerHTML = "";
+    let quiz = document.getElementById("quiz");
+    quiz.innerHTML = "";
 
-    examQuestions.forEach((q, index) => {
+    examQuestions.forEach((q, i) => {
 
         let html = `<div class="question">
-            <div><b>${index + 1}. ${q.q}</b></div>
+            <div><b>${i+1}. ${q.q}</b></div>
             <div class="options">`;
 
-        q.a.forEach((opt, i) => {
+        q.a.forEach((opt, j) => {
             html += `
             <label>
-                <input type="radio" name="q${index}" value="${i}">
+                <input type="radio" name="q${i}" value="${j}">
                 ${opt}
             </label>`;
         });
 
         html += `</div></div>`;
 
-        quizDiv.innerHTML += html;
+        quiz.innerHTML += html;
     });
 }
 
-// ===== التصحيح =====
+// التصحيح
 function submitQuiz(){
 
     let score = 0;
 
-    examQuestions.forEach((q, index) => {
+    examQuestions.forEach((q, i) => {
 
-        let selected = document.querySelector(`input[name="q${index}"]:checked`);
+        let selected = document.querySelector(`input[name="q${i}"]:checked`);
 
         if(selected && parseInt(selected.value) === q.c){
             score++;
         }
     });
 
-    let resultText = "";
-
     let percent = (score / examQuestions.length) * 100;
 
-    if(percent >= 85){
-        resultText = "ممتاز";
-    } else if(percent >= 70){
-        resultText = "جيد";
-    } else {
-        resultText = "يحتاج تحسين";
-    }
+    let level =
+        percent >= 85 ? "ممتاز" :
+        percent >= 70 ? "جيد" : "يحتاج تحسين";
 
     document.getElementById("result").innerHTML =
-        `النتيجة: ${score} / ${examQuestions.length} (${percent.toFixed(1)}%) - ${resultText}`;
+        `النتيجة: ${score} / ${examQuestions.length} (${percent.toFixed(1)}%) - ${level}`;
 }
 
 </script>
