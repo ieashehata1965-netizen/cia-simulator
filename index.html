@@ -346,6 +346,21 @@ function showResult(){
 `;
 }
 
+function printCertificate(){
+
+    const certId = "CIA-" + Date.now();
+
+    const url =
+        "certificate.html?name=" + encodeURIComponent(student) +
+        "&score=" + score +
+        "&total=" + exam.length +
+        "&percent=" + Math.round((score/exam.length)*100) +
+        "&id=" + certId;
+
+    window.location.href = url;
+}
+
+
 </script>
 
 </body>
