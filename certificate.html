@@ -2,149 +2,128 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>شهادة أكاديمية التدقيق الداخلي</title>
+<title>Smart Certificate</title>
+
+<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
 
 <style>
 body{
-    margin:0;
-    font-family: "Tahoma", sans-serif;
+    font-family: Tahoma;
     direction: rtl;
     background: linear-gradient(135deg,#f6f2e7,#efe2c1,#f8f5ea);
+    margin:0;
+    padding:20px;
 }
 
-/* الشهادة */
-.certificate{
-    width: 900px;
-    margin: 40px auto;
-    padding: 40px;
-    border: 12px solid #b08d3c;
-    background: #fff;
-    position: relative;
-    text-align: center;
+.card{
+    max-width:800px;
+    margin:auto;
+    background:#fff;
+    padding:30px;
+    border-radius:18px;
+    box-shadow:0 5px 18px rgba(0,0,0,0.15);
+    border:8px double #b08d3c;
+    text-align:center;
 }
 
-/* إطار زخرفي */
-.certificate:before{
-    content:"";
-    position:absolute;
-    top:10px; left:10px; right:10px; bottom:10px;
-    border:3px solid #d4af37;
-    pointer-events:none;
-}
-
-/* العنوان */
 h1{
-    margin-top: 10px;
     color:#7a5a12;
 }
 
-/* النص */
-p{
-    font-size:20px;
-    margin:10px 0;
-}
-
-/* اسم المستخدم */
-.name{
-    font-size:28px;
-    font-weight:bold;
-    color:#000;
-    margin:20px 0;
-}
-
-/* النتيجة */
-.result{
-    font-size:22px;
-    padding:10px;
-    margin:20px auto;
-    display:inline-block;
-    border-radius:8px;
-}
-
-/* حالات النتيجة */
-.excellent{background:#d4edda;color:#155724;}
-.good{background:#fff3cd;color:#856404;}
-.weak{background:#f8d7da;color:#721c24;}
-
-/* ختم */
-.stamp{
-    position:absolute;
-    bottom:40px;
-    left:60px;
-    width:120px;
-    height:120px;
-    border:4px solid #b22222;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:bold;
-    color:#b22222;
-    transform: rotate(-15deg);
-}
-
-/* زر */
-button{
-    display:block;
-    margin:20px auto;
-    padding:10px 25px;
+.info{
     font-size:18px;
+    margin:10px 0;
+    line-height:1.8;
+}
+
+.badge{
+    font-size:20px;
+    font-weight:bold;
+    color:#166534;
+    margin-top:10px;
+}
+
+#qr{
+    margin:20px auto;
+}
+
+button{
+    padding:12px 20px;
+    font-size:16px;
+    margin-top:15px;
+    border:none;
+    border-radius:10px;
+    background:#b08d3c;
+    color:#fff;
+    cursor:pointer;
+}
+
+/* الطباعة */
+@media print{
+    button{display:none;}
+    body{background:#fff;}
 }
 </style>
 </head>
 
 <body>
 
-<div class="certificate" id="cert">
+<div class="card">
 
-    <h1>أكاديمية التدريب على التدقيق الداخلي</h1>
-    <h3>Internal Audit Training Academy</h3>
+<h1>شهادة إتمام التدريب المهني</h1>
 
-    <p>تشهد الأكاديمية بأن:</p>
+<div class="info" id="name"></div>
+<div class="info" id="track"></div>
+<div class="info" id="part"></div>
+<div class="info" id="score"></div>
 
-    <div class="name" id="userName">اسم المتدرب</div>
+<div class="badge" id="level"></div>
 
-    <p>ابنُ أحمدَ محمدٍ قد أتمَّ اختباراتِ التدريبِ على أسئلةِ التدقيقِ الداخليِّ للجزءِ الأولِ من شهادةِ CIA بنجاح.</p>
+<div id="qr"></div>
 
-    <div id="resultBox" class="result excellent">النتيجة: 90%</div>
+<div class="info" id="certId"></div>
 
-    <p>تاريخ الإصدار: <span id="date"></span></p>
-
-    <div class="stamp">ختم الأكاديمية</div>
+<button onclick="window.print()">طباعة الشهادة</button>
 
 </div>
 
-<button onclick="printCert()">طباعة الشهادة</button>
-
 <script>
-// اسم المتدرب
-let name = "أحمد محمد";
-document.getElementById("userName").innerText = name;
 
-// النتيجة
-let score = 85;
-let box = document.getElementById("resultBox");
-box.innerText = "النتيجة: " + score + "%";
+// قراءة البيانات من الرابط
+const params = new URLSearchParams(window.location.search);
 
-if(score >= 85){
-    box.className = "result excellent";
-    box.innerText += " - ممتاز";
-}else if(score >= 70){
-    box.className = "result good";
-    box.innerText += " - جيد";
-}else{
-    box.className = "result weak";
-    box.innerText += " - يحتاج تحسين";
-}
+let name = params.get("name");
+let track = params.get("track");
+let part = params.get("part");
+let score = params.get("score");
+let total = params.get("total");
 
-// التاريخ
-document.getElementById("date").innerText =
-new Date().toLocaleDateString("ar-EG");
+// حساب النسبة
+let percent = Math.round((score/total)*100);
 
-// الطباعة
-function printCert(){
-    window.print();
-}
+// تقييم
+let level =
+    percent >= 85 ? "ممتاز" :
+    percent >= 70 ? "جيد" : "يحتاج تحسين";
+
+// رقم شهادة ذكي
+let certId = track.toUpperCase() + "-" + Date.now();
+
+// عرض البيانات
+document.getElementById("name").innerHTML = "اسم المتدرب: " + name;
+document.getElementById("track").innerHTML = "المسار: " + track;
+document.getElementById("part").innerHTML = "الجزء: " + part;
+document.getElementById("score").innerHTML = "النتيجة: " + score + " / " + total;
+document.getElementById("level").innerHTML = "التقييم: " + level;
+document.getElementById("certId").innerHTML = "رقم الشهادة: " + certId;
+
+// QR Code للتحقق
+new QRCode(document.getElementById("qr"), {
+    text: certId,
+    width: 140,
+    height: 140
+});
+
 </script>
 
 </body>
