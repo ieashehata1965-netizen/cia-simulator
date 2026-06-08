@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>CIA Internal Audit Training</title>
+<title>CIA Full Training System</title>
 
 <style>
 body{
@@ -13,16 +13,29 @@ body{
 }
 
 .container{
-    width: 900px;
-    margin: 30px auto;
+    width: 950px;
+    margin: 20px auto;
     background:#fff;
-    padding: 25px;
+    padding: 20px;
     border: 10px solid #b08d3c;
 }
 
 h1{
     text-align:center;
     color:#7a5a12;
+}
+
+.controls{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+select, button{
+    padding:8px;
+    font-size:16px;
 }
 
 .question{
@@ -34,15 +47,6 @@ h1{
 .options label{
     display:block;
     margin:5px 0;
-    cursor:pointer;
-}
-
-button{
-    display:block;
-    margin:20px auto;
-    padding:10px 25px;
-    font-size:18px;
-    cursor:pointer;
 }
 
 .result{
@@ -58,11 +62,40 @@ button{
 
 <div class="container">
 
-<h1>اختبار التدقيق الداخلي (CIA)</h1>
+<h1>نظام تدريب التدقيق الداخلي CIA</h1>
+
+<!-- أدوات التحكم -->
+<div class="controls">
+
+<select id="part">
+<option value="all">كل الأجزاء</option>
+<option value="1">Part 1</option>
+<option value="2">Part 2</option>
+<option value="3">Part 3</option>
+</select>
+
+<select id="level">
+<option value="all">كل المستويات</option>
+<option value="easy">سهل</option>
+<option value="medium">متوسط</option>
+<option value="hard">صعب</option>
+</select>
+
+<select id="count">
+<option value="5">5</option>
+<option value="10">10</option>
+<option value="20">20</option>
+<option value="30">30</option>
+<option value="50">50</option>
+</select>
+
+<button onclick="startExam()">بدء الاختبار</button>
+
+</div>
 
 <div id="quiz"></div>
 
-<button onclick="submitQuiz()">عرض النتيجة</button>
+<button onclick="submitQuiz()">تصحيح الاختبار</button>
 
 <div id="result"></div>
 
@@ -73,18 +106,34 @@ button{
 let questionBank = [];
 let examQuestions = [];
 
-// ===== تحميل بنك الأسئلة من الملف الخارجي =====
+// ===== تحميل بنك الأسئلة =====
 fetch("cia-question-bank.json")
-  .then(res => res.json())
-  .then(data => {
+.then(res => res.json())
+.then(data => {
+    questionBank = data;
+});
 
-      questionBank = data;
+// ===== بدء الاختبار =====
+function startExam(){
 
-      // نبدأ بـ 5 أسئلة فقط (مرحلة تجريبية)
-      examQuestions = questionBank.slice(0, 5);
+    let part = document.getElementById("part").value;
+    let level = document.getElementById("level").value;
+    let count = parseInt(document.getElementById("count").value);
 
-      renderQuiz();
-  });
+    let filtered = questionBank.filter(q => {
+
+        return (part === "all" || q.part == part) &&
+               (level === "all" || q.level == level);
+    });
+
+    // خلط الأسئلة
+    filtered = filtered.sort(() => Math.random() - 0.5);
+
+    examQuestions = filtered.slice(0, count);
+
+    renderQuiz();
+    document.getElementById("result").innerHTML = "";
+}
 
 // ===== عرض الأسئلة =====
 function renderQuiz(){
@@ -128,16 +177,18 @@ function submitQuiz(){
 
     let resultText = "";
 
-    if(score >= 4){
+    let percent = (score / examQuestions.length) * 100;
+
+    if(percent >= 85){
         resultText = "ممتاز";
-    } else if(score >= 3){
+    } else if(percent >= 70){
         resultText = "جيد";
     } else {
         resultText = "يحتاج تحسين";
     }
 
     document.getElementById("result").innerHTML =
-        `النتيجة: ${score} / ${examQuestions.length} - ${resultText}`;
+        `النتيجة: ${score} / ${examQuestions.length} (${percent.toFixed(1)}%) - ${resultText}`;
 }
 
 </script>
