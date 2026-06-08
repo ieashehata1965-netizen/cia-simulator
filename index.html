@@ -325,14 +325,25 @@ function showResult(){
     document.getElementById("quiz").innerHTML="";
 
     document.getElementById("result").innerHTML=`
-        <div class="card">
-        <h2>النتيجة النهائية</h2>
-        <p>المتدرب: ${student}</p>
-        <p>النتيجة: ${score} / ${exam.length}</p>
-        <p>النسبة: ${percent}%</p>
-        <p>التقييم: ${level}</p>
-        </div>
-    `;
+<div class="card">
+    <h2>النتيجة النهائية</h2>
+
+    <p>المتدرب: ${student}</p>
+    <p>النتيجة: ${score} / ${exam.length}</p>
+    <p>النسبة: ${percent}%</p>
+    <p>التقييم: ${level}</p>
+
+    <button onclick="printCertificate()">
+        🖨️ طباعة الشهادة
+    </button>
+
+    <br><br>
+
+    <button onclick="location.reload()">
+        🔄 اختبار جديد
+    </button>
+</div>
+`;
 }
 
 </script>
