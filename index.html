@@ -1,59 +1,83 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Internal Audit Training Platform</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Internal Audit & GRC Academy</title>
 
 <style>
+
 body{
     font-family: Tahoma;
-    direction: rtl;
     margin:0;
     background: linear-gradient(135deg,#f6f2e7,#efe2c1,#f8f5ea);
 }
 
+/* ===== Layout ===== */
 .container{
-    max-width:750px;
+    max-width:820px;
     margin:auto;
     padding:15px;
 }
 
-h1{
-    text-align:center;
-    color:#7a5a12;
-    font-size:22px;
-}
-
+/* ===== Cards ===== */
 .card{
     background:#fff;
-    padding:18px;
-    margin:10px 0;
-    border-radius:15px;
-    box-shadow:0 3px 10px rgba(0,0,0,0.1);
+    padding:22px;
+    margin:12px 0;
+    border-radius:18px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
 
-input,select,button{
+/* ===== Header ===== */
+header{
+    text-align:center;
+    padding:15px;
+}
+
+header h1{
+    font-size:20px;
+    margin:5px;
+    color:#7a5a12;
+}
+
+header h2{
+    font-size:14px;
+    color:#555;
+    font-weight:normal;
+}
+
+/* ===== Buttons ===== */
+button{
+    width:100%;
+    padding:14px;
+    font-size:16px;
+    border:none;
+    border-radius:12px;
+    background:#b08d3c;
+    color:#fff;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* ===== Inputs ===== */
+input,select{
     width:100%;
     padding:12px;
     margin:8px 0;
-    font-size:16px;
+    font-size:15px;
     border-radius:10px;
     border:1px solid #ddd;
 }
 
-button{
-    background:#b08d3c;
-    color:#fff;
-    border:none;
-    font-weight:bold;
-}
-
+/* ===== Quiz ===== */
 .q-box{
     background:#fff;
     padding:22px;
-    margin:10px 0;
-    border-radius:15px;
-    box-shadow:0 3px 8px rgba(0,0,0,0.1);
+    margin-top:10px;
+    border-radius:18px;
+    box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
 
 .q-title{
@@ -66,22 +90,26 @@ button{
     padding:14px;
     margin:10px 0;
     border-radius:10px;
+    background:#f7f7f7;
     border:1px solid #ddd;
     cursor:pointer;
-    background:#fafafa;
-    font-size:18px;
+    font-size:17px;
 }
 
 .option:hover{
     background:#f0e6c8;
 }
 
-.result{
-    text-align:center;
-    font-size:22px;
-    font-weight:bold;
-    margin-top:15px;
+/* ===== Screens ===== */
+.screen{display:none;}
+.active{display:block;}
+
+.small-text{
+    font-size:14px;
+    color:#555;
+    line-height:1.8;
 }
+
 </style>
 </head>
 
@@ -89,21 +117,46 @@ button{
 
 <div class="container">
 
-<h1>منصة التدقيق الداخلي والتأهيل المهني</h1>
+<!-- ================= HEADER ================= -->
+<header>
+    <h1>Internal Audit & GRC Professional Academy</h1>
+    <h2>الأكاديمية المهنية للتدقيق الداخلي والحوكمة وإدارة المخاطر</h2>
+</header>
 
-<div id="home" class="card">
+<!-- ================= WELCOME ================= -->
+<div id="welcome" class="screen active card">
+
+<h2>مرحبًا بك 👋</h2>
+
+<p class="small-text">
+هذه المنصة مخصصة للتدريب المهني في التدقيق الداخلي والحوكمة وإدارة المخاطر.<br><br>
+
+🔹 اختر الشهادة المناسبة<br>
+🔹 اختر الجزء التدريبي<br>
+🔹 حدد عدد الأسئلة<br>
+🔹 ابدأ الاختبار بنظام سؤال واحد مركّز<br><br>
+
+في النهاية سيتم إصدار شهادة ذكية تحتوي على نتيجتك ورقم شهادة قابل للتحقق.
+</p>
+
+<button onclick="goSetup()">ابدأ الاستخدام</button>
+
+</div>
+
+<!-- ================= SETUP ================= -->
+<div id="setup" class="screen card">
+
+<h2>إعداد الاختبار</h2>
 
 <input id="studentName" placeholder="اسم المتدرب">
 
-<!-- المسار -->
 <select id="track">
-<option value="cia">CIA</option>
-<option value="cma">CMA</option>
-<option value="cfa">CFA</option>
-<option value="fmaa">FMAA</option>
+<option value="cia">CIA - التدقيق الداخلي</option>
+<option value="cma">CMA - المحاسبة الإدارية</option>
+<option value="cfa">CFA - التحليل المالي</option>
+<option value="fmaa">FMAA - المحاسبة المالية</option>
 </select>
 
-<!-- الجزء الجديد -->
 <select id="part">
 <option value="all">كل الأجزاء</option>
 <option value="1">الجزء الأول</option>
@@ -120,35 +173,40 @@ button{
 <option value="50">50 سؤال</option>
 </select>
 
-<button onclick="startExam()">بدء الاختبار</button>
+<button onclick="startExam()">ابدأ الاختبار</button>
 
 </div>
 
-<div id="quiz"></div>
-<div id="result" class="result"></div>
+<!-- ================= QUIZ ================= -->
+<div id="quiz" class="screen"></div>
 
 </div>
 
 <script>
 
-let bank = [];
-let exam = [];
-let index = 0;
-let score = 0;
-let student = "";
-let track = "";
-let part = "all";
+/* ================= CORE ENGINE ================= */
 
-// تحميل بنك الأسئلة
-function loadBank(){
-    return fetch(track + "-questions.json")
-    .then(res => res.json())
-    .then(data => {
-        bank = data.sort(() => Math.random() - 0.5);
-    });
+let bank=[], exam=[], index=0, score=0;
+let student="", track="", part="all";
+
+function showScreen(id){
+    document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
 }
 
-// بدء الاختبار
+/* ===== WELCOME ===== */
+function goSetup(){
+    showScreen("setup");
+}
+
+/* ===== LOAD BANK ===== */
+async function loadBank(){
+    const res = await fetch(track+"-questions.json");
+    const data = await res.json();
+    bank = data;
+}
+
+/* ===== START ===== */
 async function startExam(){
 
     student = document.getElementById("studentName").value.trim();
@@ -163,73 +221,61 @@ async function startExam(){
 
     await loadBank();
 
-    // فلترة حسب الجزء
     let pool = bank.filter(q =>
         (part === "all" || q.part == part)
     );
 
-    exam = pool.slice(0, count);
+    exam = pool.sort(()=>Math.random()-0.5).slice(0,count);
 
-    index = 0;
-    score = 0;
+    index=0; score=0;
 
-    document.getElementById("home").style.display = "none";
+    showScreen("quiz");
 
     showQuestion();
 }
 
-// سؤال واحد فقط
+/* ===== QUESTION ===== */
 function showQuestion(){
 
-    if(index >= exam.length){
+    if(index>=exam.length){
         showResult();
         return;
     }
 
-    let q = exam[index];
+    let q=exam[index];
 
-    let html = `
+    let html=`
     <div class="q-box">
         <div class="q-title">${index+1}. ${q.q}</div>
     `;
 
-    q.a.forEach((opt, i) => {
-        html += `<div class="option" onclick="answer(${i})">${opt}</div>`;
+    q.a.forEach((o,i)=>{
+        html+=`<div class="option" onclick="answer(${i})">${o}</div>`;
     });
 
-    html += `</div>`;
+    html+=`</div>`;
 
-    document.getElementById("quiz").innerHTML = html;
+    document.getElementById("quiz").innerHTML=html;
 }
 
-// الإجابة
+/* ===== ANSWER ===== */
 function answer(i){
-
-    let q = exam[index];
-
-    if(i === q.c){
-        score++;
-    }
-
+    if(i===exam[index].c) score++;
     index++;
-    setTimeout(showQuestion, 200);
+    setTimeout(showQuestion,200);
 }
 
-
+/* ===== RESULT ===== */
 function showResult(){
 
-    let percent = (score / exam.length) * 100;
+    let percent=Math.round((score/exam.length)*100);
 
-    let level =
-        percent >= 85 ? "ممتاز" :
-        percent >= 70 ? "جيد" : "يحتاج تحسين";
-
-    window.location.href =
-        "certificate.html?name=" + encodeURIComponent(student)
-        + "&track=" + track
-        + "&part=" + part
-        + "&score=" + score
-        + "&total=" + exam.length;
+    window.location.href=
+    "certificate.html?name="+encodeURIComponent(student)
+    +"&track="+track
+    +"&part="+part
+    +"&score="+score
+    +"&total="+exam.length;
 }
 
 </script>
