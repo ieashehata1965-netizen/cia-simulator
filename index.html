@@ -252,6 +252,8 @@ async function startExam(){
 
     await loadBank();
 
+console.log("Questions Loaded:", bank.length);
+
     let pool=bank.filter(q =>
         (part==="all" || q.part==part)
     );
