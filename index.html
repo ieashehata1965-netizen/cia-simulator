@@ -9,25 +9,16 @@
 <style>
 
 body{
-    font-family: Tahoma;
+    font-family: Tahoma, Arial;
     margin:0;
     background: linear-gradient(135deg,#f6f2e7,#efe2c1,#f8f5ea);
 }
 
 /* ===== Layout ===== */
 .container{
-    max-width:820px;
+    max-width:850px;
     margin:auto;
     padding:15px;
-}
-
-/* ===== Cards ===== */
-.card{
-    background:#fff;
-    padding:22px;
-    margin:12px 0;
-    border-radius:18px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
 
 /* ===== Header ===== */
@@ -38,8 +29,8 @@ header{
 
 header h1{
     font-size:20px;
-    margin:5px;
     color:#7a5a12;
+    margin:5px;
 }
 
 header h2{
@@ -48,17 +39,13 @@ header h2{
     font-weight:normal;
 }
 
-/* ===== Buttons ===== */
-button{
-    width:100%;
-    padding:14px;
-    font-size:16px;
-    border:none;
-    border-radius:12px;
-    background:#b08d3c;
-    color:#fff;
-    font-weight:bold;
-    cursor:pointer;
+/* ===== Card ===== */
+.card{
+    background:#fff;
+    padding:20px;
+    margin:12px 0;
+    border-radius:18px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
 
 /* ===== Inputs ===== */
@@ -69,6 +56,19 @@ input,select{
     font-size:15px;
     border-radius:10px;
     border:1px solid #ddd;
+}
+
+/* ===== Button ===== */
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:#b08d3c;
+    color:#fff;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
 }
 
 /* ===== Quiz ===== */
@@ -104,10 +104,18 @@ input,select{
 .screen{display:none;}
 .active{display:block;}
 
-.small-text{
-    font-size:14px;
-    color:#555;
-    line-height:1.8;
+.small{
+    font-size:13px;
+    color:#666;
+    text-align:center;
+}
+
+/* ===== Result ===== */
+.result{
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
+    margin-top:20px;
 }
 
 </style>
@@ -117,10 +125,9 @@ input,select{
 
 <div class="container">
 
-<!-- ================= HEADER ================= -->
 <header>
-    <h1>Internal Audit & GRC Professional Academy</h1>
-    <h2>الأكاديمية المهنية للتدقيق الداخلي والحوكمة وإدارة المخاطر</h2>
+<h1>Internal Audit & GRC Professional Academy</h1>
+<h2>الأكاديمية المهنية للتدقيق الداخلي والحوكمة وإدارة المخاطر</h2>
 </header>
 
 <!-- ================= WELCOME ================= -->
@@ -128,18 +135,12 @@ input,select{
 
 <h2>مرحبًا بك 👋</h2>
 
-<p class="small-text">
-هذه المنصة مخصصة للتدريب المهني في التدقيق الداخلي والحوكمة وإدارة المخاطر.<br><br>
-
-🔹 اختر الشهادة المناسبة<br>
-🔹 اختر الجزء التدريبي<br>
-🔹 حدد عدد الأسئلة<br>
-🔹 ابدأ الاختبار بنظام سؤال واحد مركّز<br><br>
-
-في النهاية سيتم إصدار شهادة ذكية تحتوي على نتيجتك ورقم شهادة قابل للتحقق.
+<p class="small">
+منصة تدريب احترافية في التدقيق الداخلي والشهادات المهنية.<br>
+اختر نوع الاختبار ثم ابدأ فورًا.
 </p>
 
-<button onclick="goSetup()">ابدأ الاستخدام</button>
+<button onclick="goSetup()">بدء الاستخدام</button>
 
 </div>
 
@@ -165,6 +166,14 @@ input,select{
 <option value="4">الجزء الرابع</option>
 </select>
 
+<select id="mode" onchange="toggleMode()">
+<option value="quick">تدريب سريع (5)</option>
+<option value="practice">اختبار تدريبي (20)</option>
+<option value="mock">اختبار محاكاة (50)</option>
+<option value="full">⭐ اختبار كامل (Full Exam)</option>
+</select>
+
+<div id="countBox">
 <select id="count">
 <option value="5">5 أسئلة</option>
 <option value="10">10 أسئلة</option>
@@ -172,6 +181,7 @@ input,select{
 <option value="30">30 سؤال</option>
 <option value="50">50 سؤال</option>
 </select>
+</div>
 
 <button onclick="startExam()">ابدأ الاختبار</button>
 
@@ -180,14 +190,23 @@ input,select{
 <!-- ================= QUIZ ================= -->
 <div id="quiz" class="screen"></div>
 
+<!-- ================= RESULT ================= -->
+<div id="result" class="result"></div>
+
 </div>
 
 <script>
 
 /* ================= CORE ENGINE ================= */
 
-let bank=[], exam=[], index=0, score=0;
-let student="", track="", part="all";
+let bank=[];
+let exam=[];
+let index=0;
+let score=0;
+
+let student="";
+let track="";
+let part="all";
 
 function showScreen(id){
     document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
@@ -199,20 +218,32 @@ function goSetup(){
     showScreen("setup");
 }
 
+/* ===== TOGGLE MODE ===== */
+function toggleMode(){
+    let mode=document.getElementById("mode").value;
+    document.getElementById("countBox").style.display =
+        (mode==="full") ? "none" : "block";
+}
+
 /* ===== LOAD BANK ===== */
 async function loadBank(){
-    const res = await fetch(track+"-questions.json");
-    const data = await res.json();
-    bank = data;
+    try{
+        const res = await fetch(track+"-questions.json");
+        const data = await res.json();
+        bank = data;
+    }catch(e){
+        alert("خطأ في تحميل بنك الأسئلة");
+    }
 }
 
 /* ===== START ===== */
 async function startExam(){
 
-    student = document.getElementById("studentName").value.trim();
-    track = document.getElementById("track").value;
-    part = document.getElementById("part").value;
-    let count = parseInt(document.getElementById("count").value);
+    student=document.getElementById("studentName").value.trim();
+    track=document.getElementById("track").value;
+    part=document.getElementById("part").value;
+    let mode=document.getElementById("mode").value;
+    let count=parseInt(document.getElementById("count").value);
 
     if(!student){
         alert("أدخل اسم المتدرب");
@@ -221,16 +252,30 @@ async function startExam(){
 
     await loadBank();
 
-    let pool = bank.filter(q =>
-        (part === "all" || q.part == part)
+    let pool=bank.filter(q =>
+        (part==="all" || q.part==part)
     );
 
-    exam = pool.sort(()=>Math.random()-0.5).slice(0,count);
+    if(mode==="full"){
+        exam=pool;
+    }
+    else if(mode==="quick"){
+        exam=pool.sort(()=>Math.random()-0.5).slice(0,5);
+    }
+    else if(mode==="practice"){
+        exam=pool.sort(()=>Math.random()-0.5).slice(0,20);
+    }
+    else if(mode==="mock"){
+        exam=pool.sort(()=>Math.random()-0.5).slice(0,50);
+    }
+    else{
+        exam=pool.sort(()=>Math.random()-0.5).slice(0,count);
+    }
 
-    index=0; score=0;
+    index=0;
+    score=0;
 
     showScreen("quiz");
-
     showQuestion();
 }
 
@@ -270,12 +315,22 @@ function showResult(){
 
     let percent=Math.round((score/exam.length)*100);
 
-    window.location.href=
-    "certificate.html?name="+encodeURIComponent(student)
-    +"&track="+track
-    +"&part="+part
-    +"&score="+score
-    +"&total="+exam.length;
+    let level=
+        percent>=85 ? "ممتاز" :
+        percent>=70 ? "جيد" :
+        "يحتاج تطوير";
+
+    document.getElementById("quiz").innerHTML="";
+
+    document.getElementById("result").innerHTML=`
+        <div class="card">
+        <h2>النتيجة النهائية</h2>
+        <p>المتدرب: ${student}</p>
+        <p>النتيجة: ${score} / ${exam.length}</p>
+        <p>النسبة: ${percent}%</p>
+        <p>التقييم: ${level}</p>
+        </div>
+    `;
 }
 
 </script>
