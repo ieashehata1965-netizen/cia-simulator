@@ -234,9 +234,33 @@ h2{
     font-weight: 500;
 }
 
+/* ===== Bottom Section Container - QR & Seal Side by Side ===== */
+.bottom-section{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: center;
+    margin-top: 15px;
+    position: relative;
+    z-index: 2;
+}
+
+.seal-column{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.qr-column{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 /* ===== QR ===== */
 #qr{
-    margin-top:10px;
     display:flex;
     justify-content:center;
     position:relative;
@@ -245,8 +269,7 @@ h2{
     background: rgba(212, 175, 55, 0.1);
     border-radius: 8px;
     width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto;
 }
 
 /* ===== Seal - Enhanced Professional ===== */
@@ -254,7 +277,7 @@ h2{
     position:relative;
     width:160px;
     height:160px;
-    margin:15px auto;
+    margin:0 auto;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -383,6 +406,17 @@ h2{
     letter-spacing: 4px;
     margin: 10px 0;
     font-weight: bold;
+    position: relative;
+    z-index: 2;
+}
+
+/* ===== Executive Director Line - Enhanced ===== */
+.executive-line{
+    font-size: 14px;
+    color: #0d3612;
+    font-weight: 900;
+    margin-top: 12px;
+    line-height: 1.4;
     position: relative;
     z-index: 2;
 }
@@ -521,10 +555,15 @@ button:active{
         color: #0d3612 !important;
     }
 
+    .bottom-section{
+        grid-template-columns: 1fr 1fr !important;
+        gap: 25px !important;
+    }
+
     .seal-container{
         width:190px !important;
         height:190px !important;
-        margin:12px auto !important;
+        margin:0 auto !important;
     }
 
     .seal{
@@ -574,19 +613,17 @@ button:active{
         letter-spacing: 5px !important;
     }
 
-    .print-only{
-        display:block !important;
-        font-size: 12px !important;
+    .executive-line{
+        font-size: 16px !important;
         color: #0d3612 !important;
-        font-weight: 700 !important;
-        margin-top: 5px !important;
-        line-height: 1.3 !important;
+        font-weight: 900 !important;
+        margin-top: 15px !important;
     }
 
     #qr{
         background: transparent !important;
         padding: 5px !important;
-        margin-top: 8px !important;
+        margin: 0 auto !important;
     }
 }
 
@@ -633,26 +670,35 @@ button:active{
 
 <div class="info small" id="certId"></div>
 
-<div id="qr"></div>
-
-<!-- Enhanced Professional Circular Seal with Academy Name -->
-<div class="seal-container">
-    <div class="seal">
-        <div class="seal-inner">
-            <div class="seal-star">★</div>
-            <div class="seal-text">
-                <div class="seal-academy-name">GRC ACADEMY</div>
-                <div class="seal-text-en">CERTIFIED</div>
-                <div class="seal-text-ar">معتمد</div>
+<!-- QR and Seal Side by Side -->
+<div class="bottom-section">
+    <!-- Seal on the left -->
+    <div class="seal-column">
+        <!-- Enhanced Professional Circular Seal with Academy Name -->
+        <div class="seal-container">
+            <div class="seal">
+                <div class="seal-inner">
+                    <div class="seal-star">★</div>
+                    <div class="seal-text">
+                        <div class="seal-academy-name">GRC ACADEMY</div>
+                        <div class="seal-text-en">CERTIFIED</div>
+                        <div class="seal-text-ar">معتمد</div>
+                    </div>
+                    <div class="seal-star">★</div>
+                </div>
             </div>
-            <div class="seal-star">★</div>
         </div>
+    </div>
+
+    <!-- QR on the right -->
+    <div class="qr-column">
+        <div id="qr"></div>
     </div>
 </div>
 
 <div class="ornament">✦ ✦ ✦</div>
 
-<div class="info small print-only">
+<div class="executive-line">
 Issued by: Chief Executive Officer – Internal Audit & GRC Academy
 </div>
 
