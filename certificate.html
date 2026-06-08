@@ -234,6 +234,19 @@ h2{
     font-weight: 500;
 }
 
+.disclaimer{
+    font-size:12px;
+    color:#0d3612;
+    font-weight: 600;
+    margin:15px 0 10px 0;
+    line-height: 1.6;
+    position:relative;
+    z-index:2;
+    padding: 10px;
+    background: rgba(212, 175, 55, 0.08);
+    border-radius: 8px;
+}
+
 /* ===== Bottom Section Container - QR & Seal Side by Side ===== */
 .bottom-section{
     display: grid;
@@ -555,6 +568,16 @@ button:active{
         color: #0d3612 !important;
     }
 
+    .disclaimer{
+        font-size:13px !important;
+        color: #0d3612 !important;
+        font-weight: 700 !important;
+        margin:12px 0 10px 0 !important;
+        line-height: 1.5 !important;
+        padding: 8px !important;
+        background: rgba(212, 175, 55, 0.1) !important;
+    }
+
     .bottom-section{
         grid-template-columns: 1fr 1fr !important;
         gap: 25px !important;
@@ -670,6 +693,12 @@ button:active{
 
 <div class="info small" id="certId"></div>
 
+<!-- Disclaimer Section -->
+<div class="disclaimer">
+    تفيد الأكاديمية المهنية للتدقيق الداخلي والحوكمة والامتثال بأن المتدرب قد اجتاز اختبار التقييم بنجاح وحصل على درجة ممتازة.<br><br>
+    <strong>ملاحظة هامة:</strong> هذه الشهادة تُعد شهادة تدريب وتقييم فقط، ولا تُعتبر ترخيصاً مهنياً أو اعتماداً رسمياً لممارسة المهنة.
+</div>
+
 <!-- QR and Seal Side by Side -->
 <div class="bottom-section">
     <!-- Seal on the left -->
@@ -681,7 +710,6 @@ button:active{
                     <div class="seal-star">★</div>
                     <div class="seal-text">
                         <div class="seal-academy-name">GRC ACADEMY</div>
-                        <div class="seal-text-en">CERTIFIED</div>
                         <div class="seal-text-ar">معتمد</div>
                     </div>
                     <div class="seal-star">★</div>
