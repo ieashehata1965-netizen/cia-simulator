@@ -19,3 +19,7 @@ CIA Simulator is a web-based examination platform for Internal Audit, Governance
 
 Mohamed Shehata
 Internal Audit & GRC Professional Academy
+
+## Sample Certificate
+
+![Certificate](certificate.png)
