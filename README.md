@@ -25,5 +25,5 @@ Internal Audit & GRC Professional Academy
 ## Sample Certificate
 
 <p align="center">
-  <img src="./certificate.png" width="800" alt="Sample Certificate">
+  <img src="https://raw.githubusercontent.com/ieashehata1965-netizen/cia-simulator/main/certificate.png" width="800" alt="Sample Certificate">
 </p>
